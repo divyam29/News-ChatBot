@@ -1,23 +1,24 @@
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import random
+from news import getNews
 
 def init():
     global tokenizer, model
     tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-medium")
     model = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-medium")
-    print("done")
+    # print("done")
 
 
 def main():
     # News headlines list
-    news_headlines = [
-        "Breaking News: Scientists discover a new species of dinosaur",
-        "Technology Update: New smartphone with advanced features released",
-        "Sports News: Local team wins championship title",
-        "Business Update: Stocks soar to all-time high",
-        "Entertainment Buzz: Highly anticipated movie trailer released",
-    ]
+    # news_headlines = [
+    #     "Breaking News: Scientists discover a new species of dinosaur",
+    #     "Technology Update: New smartphone with advanced features released",
+    #     "Sports News: Local team wins championship title",
+    #     "Business Update: Stocks soar to all-time high",
+    #     "Entertainment Buzz: Highly anticipated movie trailer released",
+    # ]
 
     exit_words = [
         "goodbye",
@@ -66,8 +67,8 @@ def main():
 
         # Encode the input
         user_input = tokenizer.encode(question + tokenizer.eos_token, return_tensors="pt")
-        print(user_input)
-        print(type(user_input))
+        # print(user_input)
+        # print(type(user_input))
 
         ques_lst = question.split()
 
@@ -96,7 +97,8 @@ def main():
 
         # Check if the response is a news-related query
         if any(word in question.lower() for word in ["news", "update", "headline"]):
-            response = "Here are some recent news headlines:\n" + "\n".join(news_headlines)
+            news_headlines=getNews()
+            response = "Here are some recent news headlines:\n" + "\n\n".join(news_headlines)
         elif any(word in exit_words for word in ques_lst):
             cont = False
             response = random.choice(goodbye_words)
